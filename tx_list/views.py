@@ -2,10 +2,14 @@ from django.shortcuts import render, redirect
 from .models import Tx
 from .forms import TxForm, registerForm, editProfileForm
 from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
-from django.http import HttpResponseRedirect
+from django.contrib.auth.forms import PasswordChangeForm
+# from django.http import HttpResponseRedirect
 from django.core.serializers.json import DjangoJSONEncoder
+import stripe
 
+from paymt_app import settings
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 import json
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
@@ -128,3 +132,26 @@ def change_pswd(request):
 			return redirect('profile')
 	context={'form': form}
 	return render(request, 'auth/change_pswd.html', context)
+
+def stripe_pay(request):
+
+	# Token is created using Checkout or Elements!
+	# Get the payment token ID submitted by the form:
+	charge = None
+
+	if request.method == 'POST':
+		try:
+			token = request.POST.getlist('stripeToken')[0]
+			charge = stripe.Charge.create(
+			    amount=999,
+			    currency='usd',
+			    description='Example charge',
+			    source=token,
+			)
+			messages.success(request, ('Payment worked!'))
+
+
+		except:
+			messages.error(request, ('Payment failed!'))
+
+	return render(request, 'stripe_pay.html', {'charge': charge, 'pubkey': 'pk_test_8aTHebG2tmwAfjbGSyHyqVA5'})
