@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}PayMT APP{% endblock %}
+
+{% block content %}
+
+	{% if all_items %}
+	<table class="table table-bordered">
+		<td >Transactions:</td>
+		<td><center></center></td>
+		{% for things in all_items %}
+			{% if things.completed %}
+				<tr class="table-secondary">
+					<td class="striker"><a href="{% url 'edit' things.id %}">{{ things.item }}</a></td>
+					<td><center><a href="{% url 'delete' things.id %}">Delete</a></center></td>
+				</tr>
+			{% else %}
+				<tr>
+					<td><a href="{% url 'edit' things.id %}">{{ things.item }}</a></td>
+					<td><center><a href="{% url 'delete' things.id %}">Delete</a></center></td>
+				</tr>
+			{% endif %}
+		{% endfor %}
+	</table>
+	{% endif %}
+
+{% endblock %}

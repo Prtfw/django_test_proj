@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %} PayMT APP | Register {% endblock %}
+
+
+{% block content %}
+<form method="POST" action = "{% url 'edit_profile' %}">
+  {% csrf_token %}
+
+  {% if form.errors %}
+      <div class="alert alert-warning alert-dismissable" role="alert">
+        <button class="close" data-dismiss="alert">
+                <small><sup>x</sup></small>
+            </button>
+            <p> form error: plz check your inputs ... </p>
+
+            {% for field in form%}
+                {% if field.errors %}
+                  {{ field.errors }}
+                {% endif %}
+            {% endfor %}
+
+
+      </div>
+
+  {% endif %}
+
+  {{form.as_p}}
+
+
+  <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+{% endblock %}

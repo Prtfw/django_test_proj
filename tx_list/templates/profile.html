@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %} PayMT APP | Profile {% endblock %}
+
+
+{% block content %}
+<h1>profile</h1>
+
+{% if user.is_authenticated %}
+<p>{{user.username}} </p>
+{% else %}
+
+{% endif %}
+{% endblock %}

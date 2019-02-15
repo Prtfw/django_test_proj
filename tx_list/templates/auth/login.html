@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %} PayMT APP | Login {% endblock %}
+
+
+{% block content %}
+
+<form method="POST">
+  {% csrf_token %}
+  <div class="form-group">
+    <input type="text" class="form-control" placeholder="enter username / Email" name = 'username'>
+  </div>
+  <div class="form-group">
+    <input type="password" class="form-control" placeholder="password" name = 'password'>
+  </div>
+  <button type="submit" class="btn btn-primary">Login</button>
+
+</form>
+
+{% endblock %}
