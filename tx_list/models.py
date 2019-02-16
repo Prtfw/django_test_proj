@@ -1,9 +1,16 @@
 from django.db import models
 
 class Tx(models.Model):
-	item = models.CharField(max_length=200)
-	completed = models.BooleanField(default=False)
+	item = models.IntegerField()
+	amt = models.FloatField(default=False)
 	note = models.CharField(max_length=200,  default='')
 
 	def __str__(self):
-		return self.item + ' | '  + self.note  + ' | ' +  str(self.completed)
+		return self.item + ' | '  + self.note  + ' | ' +  str(self.amt)
+
+	def _create(self, **kwargs):
+		obj = self.model(**kwargs)
+		self._for_write = True
+		print(**kwargs)
+		obj.save(force_insert=True, using=self.db)
+		return obj

@@ -8,7 +8,7 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 class TxForm(forms.ModelForm):
 	class Meta:
 		model = Tx
-		fields= ["item", "completed"]
+		fields= ["item","note","amt"]
 
 
 

@@ -1,13 +1,17 @@
 from django.shortcuts import render, redirect
 from .models import Tx
 from .forms import TxForm, registerForm, editProfileForm
+from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 # from django.http import HttpResponseRedirect
 from django.core.serializers.json import DjangoJSONEncoder
+from django.urls import reverse
+
 import stripe
 
 from paymt_app import settings
+import time
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -23,12 +27,12 @@ def home(request):
 
 		if form.is_valid():
 			form.save()
-			all_items = Tx.objects.all
+			all_items = Tx.objects.all().order_by('-item')
 			messages.success(request, ('Item Has Been Added To List!'))
-			return render(request, 'home.html', {'all_items': all_items})
+			# return render(request, 'home.html', {'all_items': all_items})
 
 	else:
-		all_items = Tx.objects.all
+		all_items = Tx.objects.all().order_by('-item')
 		return render(request, 'home.html', {'all_items': all_items})
 
 def profile(request):
@@ -42,26 +46,28 @@ def delete(request, list_id):
 
 def cross_off(request, list_id):
 	item = Tx.objects.get(pk=list_id)
-	item.completed = True
+	item.amt = True
 	item.save()
 	return redirect('home')
 
 def uncross(request, list_id):
 	item = Tx.objects.get(pk=list_id)
-	item.completed = False
+	item.amt = False
 	item.save()
 	return redirect('home')
 
 def edit(request, list_id):
 	if request.method == 'POST':
 		item = Tx.objects.get(pk=list_id)
-
+		print(request.POST)
 		form = TxForm(request.POST or None, instance=item)
 
 		if form.is_valid():
 			form.save()
 			messages.success(request, ('Item Has Been Edited!'))
 			return redirect('home')
+		return HttpResponseRedirect('/')
+
 
 	else:
 		item = Tx.objects.get(pk=list_id)
@@ -145,13 +151,18 @@ def stripe_pay(request):
 			charge = stripe.Charge.create(
 			    amount=999,
 			    currency='usd',
-			    description='Example charge',
+			    description='',
 			    source=token,
 			)
-			messages.success(request, ('Payment worked!'))
-
-
+			Tx.objects.create(item= int(time.time()), note=charge.description, amt=charge.amount)
+			all_items = Tx.objects.all().order_by('-item')
+			return render(request, 'home.html', {'all_items': all_items})
 		except:
 			messages.error(request, ('Payment failed!'))
 
 	return render(request, 'stripe_pay.html', {'charge': charge, 'pubkey': 'pk_test_8aTHebG2tmwAfjbGSyHyqVA5'})
+
+
+def profile_edit(request):
+	print(request.user)
+	return render(request, 'profile_edit.html', {'user': request.user})

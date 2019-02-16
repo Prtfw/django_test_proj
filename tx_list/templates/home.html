@@ -6,20 +6,13 @@
 
 	{% if all_items %}
 	<table class="table table-bordered">
-		<td >Transactions:</td>
-		<td><center></center></td>
-		{% for things in all_items %}
-			{% if things.completed %}
-				<tr class="table-secondary">
-					<td class="striker"><a href="{% url 'edit' things.id %}">{{ things.item }}</a></td>
-					<td><center><a href="{% url 'delete' things.id %}">Delete</a></center></td>
-				</tr>
-			{% else %}
+		<td >Transactions ID (timestamp):</td>
+		<td><center>Note:</center></td>
+		{% for tx in all_items %}
 				<tr>
-					<td><a href="{% url 'edit' things.id %}">{{ things.item }}</a></td>
-					<td><center><a href="{% url 'delete' things.id %}">Delete</a></center></td>
+					<td><a href="{% url 'edit' tx.id %}">{{ tx.item }}</a></td>
+					<td> {{ tx.note }}{{ tx.note|yesno:",n/a" }} | <a href="{% url 'edit' tx.id %}"> {{tx.note|yesno:"edit,add" }} </a> | <a href="{% url 'delete' tx.id %}">delete</a></td>
 				</tr>
-			{% endif %}
 		{% endfor %}
 	</table>
 	{% endif %}
