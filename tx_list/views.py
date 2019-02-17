@@ -44,17 +44,6 @@ def delete(request, list_id):
 	messages.success(request, ('Item Has Been Deleted!'))
 	return redirect('home')
 
-def cross_off(request, list_id):
-	item = Tx.objects.get(pk=list_id)
-	item.amt = True
-	item.save()
-	return redirect('home')
-
-def uncross(request, list_id):
-	item = Tx.objects.get(pk=list_id)
-	item.amt = False
-	item.save()
-	return redirect('home')
 
 def edit(request, list_id):
 	if request.method == 'POST':
@@ -143,10 +132,11 @@ def stripe_pay(request):
 
 	# Token is created using Checkout or Elements!
 	# Get the payment token ID submitted by the form:
-	charge = None
 
-	if request.method == 'POST':
-		try:
+	user=None
+	charge = None
+	if request.user.is_authenticated:
+		if request.method == 'POST':			# try:
 			token = request.POST.getlist('stripeToken')[0]
 			charge = stripe.Charge.create(
 			    amount=999,
@@ -157,12 +147,10 @@ def stripe_pay(request):
 			Tx.objects.create(item= int(time.time()), note=charge.description, amt=charge.amount)
 			all_items = Tx.objects.all().order_by('-item')
 			return render(request, 'home.html', {'all_items': all_items})
-		except:
+			# except:
 			messages.error(request, ('Payment failed!'))
+		return render(request, 'stripe_pay.html', {'charge': charge, 'pubkey': 'pk_test_8aTHebG2tmwAfjbGSyHyqVA5'})
 
-	return render(request, 'stripe_pay.html', {'charge': charge, 'pubkey': 'pk_test_8aTHebG2tmwAfjbGSyHyqVA5'})
-
-
-def profile_edit(request):
-	print(request.user)
-	return render(request, 'profile_edit.html', {'user': request.user})
+	else:
+			messages.error(request, ('You must login first'))
+			return redirect('login')
