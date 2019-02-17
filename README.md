@@ -1,7 +1,8 @@
 # django_test_proj
 
 ## Features:
-- Email/Password Authentication => Done
+- Email/Password Authentication => [![done](https://cl.ly/f945d6eb4003)](https://cl.ly/f945d6eb4003)
+
 
 - Google Oauth => Done
 
