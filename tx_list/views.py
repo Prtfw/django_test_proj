@@ -154,3 +154,6 @@ def stripe_pay(request):
 	else:
 			messages.error(request, ('You must login first'))
 			return redirect('login')
+
+def social_login(request):
+	return redirect('/accounts/login')
