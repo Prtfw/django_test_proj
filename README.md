@@ -11,9 +11,9 @@
 
 - Database to track the transactions between users => Done
 
-- A note attached to each transaction => done
+- A note attached to each transaction => Done
 
 - A newsfeed to see all the current users transactions => Done
 
-- Tests => TODO
+- Tests => Done
 
