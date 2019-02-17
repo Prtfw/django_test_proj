@@ -6,7 +6,7 @@ class Tx(models.Model):
 	note = models.CharField(max_length=200,  default='')
 
 	def __str__(self):
-		return self.item + ' | '  + self.note  + ' | ' +  str(self.amt)
+		return  str(self.item) + ' | '  + self.note  + ' | ' +  str(self.amt)
 
 	def _create(self, **kwargs):
 		obj = self.model(**kwargs)
